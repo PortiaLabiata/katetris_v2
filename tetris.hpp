@@ -22,7 +22,7 @@ struct piece_t {
 
 static const piece_t t_piece = {
 	.data = {{-1, 0}, {0, 0}, {1, 0}, {0, 1}},
-	.center = {1, 1},
+	.center = {1, 0},
 	.r = 116,
 	.g = 116,
 	.b = 116,

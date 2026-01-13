@@ -1,4 +1,6 @@
 #include "disp_pc.hpp"
+#include "mutex.hpp"
+#include "mutex_class.hpp"
 #include "osal.hpp"
 #include "font.hpp"
 
@@ -8,6 +10,9 @@
 #include <SDL_video.h>
 
 static const auto ZOOM = 2;
+bool button_evt = false;
+SDL_Keycode sym; 
+OS::mutex_t mtx;
 
 namespace OSAL {
 
@@ -46,8 +51,6 @@ void disp_pc_t::draw_area(const disp_backend_t::dirty_t& area) {
 					static_cast<int>(i+area.y)*ZOOM, ZOOM, ZOOM};
 
 			SDL_RenderFillRect(renderer, &rect);
-
-			SDL_SetRenderDrawColor(renderer, 255, 0, 0, 100);
 			SDL_RenderFillRect(renderer, &rect);
 		}
 	}
@@ -68,6 +71,10 @@ void disp_pc_t::flush() {
 	if (SDL_PollEvent(&evt) != 0) {
 		if (evt.type == SDL_QUIT) {
 			deinit_flag = true;
+		} else if (evt.type == SDL_KEYDOWN) {
+			OS::lock_guard_t guard(mtx);
+			button_evt = true;
+			sym = evt.key.keysym.sym;
 		}
 	}
 	bool have_updates = false;

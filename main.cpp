@@ -1,9 +1,9 @@
-#include "mutex_class.hpp"
 #include "osal.hpp"
 #include "peripherals.hpp"
 #include "sched.hpp"
 #include "tetris.hpp"
 #include "env.hpp"
+#include "keypad.hpp"
 
 using namespace OSAL;
 using namespace OS;
@@ -31,21 +31,39 @@ TASK_FUNC(video_task) {
 	}
 }
 
+static piece_t piece;
 TASK_FUNC(main_task) {
 	const size_t size = 16;
 	size_t x = size;
 	osal->delay(2000);
 
-	static piece_t piece = t_piece;
+	piece = t_piece;
 	while (1) {
 #if SITL == ON
 		extern disp_pc_t disp_pc;
 		if (disp_pc.deinit_flag)
 			disp_pc.deinit();
 #endif
+		piece.center.y++;
 		piece.draw();
-		//disp->printf(0, 0, "FUCK");
 		osal->delay(1000);
+	}
+}
+
+TASK_FUNC(keypad_task) {
+	keypad->init();
+	while (1) {
+		const auto mask = keypad->read();		
+		if (mask.bits.enter)
+			;
+		if (mask.bits.right) 
+			piece.center.x++;
+		if (mask.bits.left)
+			piece.center.x--;
+		if (mask.bits.down)
+			piece.center.y++;
+
+		osal->delay(20);
 	}
 }
 
@@ -55,6 +73,13 @@ int main(void) {
 	sched->create_task({
 		.func = video_task,
 		.name = "video",
+		.prio = 1,
+		.stack_size = 512,
+	});
+
+	sched->create_task({
+		.func = keypad_task,
+		.name = "keypad",
 		.prio = 1,
 		.stack_size = 512,
 	});

@@ -72,7 +72,8 @@ else()
 	# Here we do not need to save space, so no stripped version.
 
 	find_package(SDL2 REQUIRED)
-	add_executable(sitl ${COMMON_SOURCES} osal_pc.cpp disp_pc.cpp)
+	add_executable(sitl ${COMMON_SOURCES} osal_pc.cpp disp_pc.cpp
+		keypad_pc.cpp)
 	target_link_libraries(sitl SDL2::SDL2)
 	target_compile_options(sitl PUBLIC -g)
 	target_link_options(sitl PUBLIC -g)
