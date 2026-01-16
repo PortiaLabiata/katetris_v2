@@ -3,7 +3,7 @@ include <top_panel.scad>;
 
 thickness = 3;
 side_height = 110;
-side_width = 20;
+side_width = 25;
 
 switch_to_bottom = 30;
 
@@ -18,11 +18,11 @@ module side_panel() {
 		}
 		union() {
 			mount_hole_mask(
-				bracket_width/2-thickness*1.5,
+				bracket_width/2-thickness*0.65,
 				height/3
 			);
 			mount_hole_mask(
-				bracket_width/2-thickness*1.5,
+				bracket_width/2-thickness*0.65,
 				-height/3
 			);
 		}

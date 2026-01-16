@@ -49,4 +49,8 @@ void ioline_t::toggle() {
 	port->ODR ^= (0x01 << pin);
 }
 
+bool ioline_t::read() {
+	return static_cast<bool>((port->IDR >> pin) & 0x01);
+}
+
 }

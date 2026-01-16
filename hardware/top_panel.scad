@@ -27,18 +27,22 @@ module cap_large_mask(x=0, y=0) {
 			$fn=400);
 }
 
+module mount_hole_mask(x=0, y=0) {
+    translate([x, y, -thickness])
+        cylinder(mask_depth, 
+            mount_holes_r, mount_holes_r, $fn=400);
+}
+
 module buttons_mask(d=40) {
 	cap_large_mask(d, 0);
 	cap_large_mask(0, d);
 	cap_large_mask(-d, 0);
 	cap_large_mask(0, -d);
-	cap_large_mask(1.2*d, 2*d);
-}
-
-module mount_hole_mask(x=0, y=0) {
-    translate([x, y, -thickness])
-        cylinder(mask_depth, 
-            mount_holes_r, mount_holes_r, $fn=400);
+	cap_large_mask(15, 15);
+    
+    mount_hole_mask(14, -12.25);
+    mount_hole_mask(-14, -12.25);
+    mount_hole_mask(0, 0);
 }
 
 module display_mask() {
@@ -63,6 +67,6 @@ module top_panel() {
         translate([0, height/4-4, 0])
             display_mask();
 		translate([0, -30, 0])
-			buttons_mask(10);
+			buttons_mask(11);
     }
 }

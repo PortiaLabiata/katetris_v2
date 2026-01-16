@@ -24,6 +24,8 @@ struct ioline_t {
 	void set();
 	void clear();
 	void toggle();
+
+	bool read();
 };
 
 }
