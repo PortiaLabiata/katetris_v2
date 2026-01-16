@@ -26,10 +26,17 @@ if(NOT SITL)
 
 	# Mostly options to reduce .text size.
 	set(UC_COMPILE_OPTIONS -Wall -Og -mcpu=cortex-m3 
-			-mthumb -mno-thumb-interwork -nostdlib --specs=nosys.specs
-			-flto)
+			-mthumb -mno-thumb-interwork -nostdlib 
+			--specs=nano.specs
+			--specs=nosys.specs
+			-flto
+			-nostartfiles
+	)
 	set(UC_LINK_OPTIONS 
-		-Wl,-L${CMAKE_CURRENT_SOURCE_DIR}/bpill,-T./STM32F103XB_FLASH.ld)
+		-Wl,-L${CMAKE_CURRENT_SOURCE_DIR}/bpill,-T./STM32F103XB_FLASH.ld
+		--specs=nano.specs
+		--specs=nosys.specs
+	)
 
 	# Theese have to go before FreeRTOS compilation so that compiler
 	# knows we are using Thumb mode and specific linker script.
@@ -38,7 +45,7 @@ if(NOT SITL)
 	add_link_options(${UC_LINK_OPTIONS})
 
 	set(FREERTOS_PORT GCC_ARM_CM3)
-	set(FREERTOS_HEAP "1" CACHE STRING "" FORCE)
+	set(FREERTOS_HEAP "2" CACHE STRING "" FORCE)
 
 	add_library(freertos_config INTERFACE)
 	target_include_directories(freertos_config SYSTEM INTERFACE
@@ -47,10 +54,10 @@ if(NOT SITL)
 endif()
 
 set(COMMON_SOURCES main.cpp common.cpp draw.cpp tetris.cpp)
-add_compile_options(-fno-exceptions -fno-rtti)
+add_compile_options(-fno-exceptions -fno-rtti -std=c++17)
 if(NOT SITL)
 	set(ALL_SOURCES ${COMMON_SOURCES} gpio.cpp spi.cpp osal_stm32.cpp
-			disp_stm32.cpp)
+			disp_stm32.cpp keypad_stm32.cpp)
 
 	# There are two versions of firmware: regular and debug. In regular
 	# version, all debug symbols are stripped, which cuts .text size

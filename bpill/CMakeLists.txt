@@ -14,9 +14,15 @@ target_include_directories(CMSIS
 		PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
 set(UC_COMPILE_OPTIONS -Wall -Og -mcpu=cortex-m3 
-		-mthumb -mno-thumb-interwork -g)
+		-mthumb -mno-thumb-interwork -g
+		--specs=nano.specs
+		--specs=nosys.specs
+)
 set(UC_LINK_OPTIONS 
-		-Wl,-L${CMAKE_CURRENT_SOURCE_DIR},-T./STM32F103XB_FLASH.ld)
+		-Wl,-L${CMAKE_CURRENT_SOURCE_DIR},-T./STM32F103XB_FLASH.ld
+		--specs=nano.specs
+		--specs=nosys.specs
+)
 
 target_compile_options(CMSIS PUBLIC ${UC_COMPILE_OPTIONS})
 target_link_options(CMSIS PUBLIC 

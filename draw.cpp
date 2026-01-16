@@ -1,5 +1,10 @@
 #include <stdarg.h>
 #include <string.h>
+
+#ifdef assert
+	#undef assert
+#endif
+
 #include "osal_class.hpp"
 #include "env.hpp"
 #include "common.hpp"
