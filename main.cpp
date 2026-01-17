@@ -40,6 +40,16 @@ static const rect_t screen_rect{
 	.sy = disp_backend_t::_sizey,
 };
 
+// Intended to be used with temporaries
+static void clear_push(rect_t&& rect) {
+	rect.grid2px().intersect(screen_rect);
+	rect.translate(
+		piece_t::_x_offset,
+		piece_t::_y_offset
+	);
+	disp->clear_stack.push(rect);
+}
+
 TASK_FUNC(main_task) {
 	osal->delay(2000);
 
@@ -52,18 +62,12 @@ TASK_FUNC(main_task) {
 #endif
 		piece.center.y++;
 
-		rect_t rect = {
+		clear_push({
 			.x = piece.center.x-1,
 			.y = piece.center.y-1,
 			.sx = 3,
 			.sy = 1,
-		};
-		rect.grid2px().intersect(screen_rect);
-		rect.translate(
-			piece_t::_x_offset,
-			piece_t::_y_offset
-		);
-		disp->clear_stack.push(rect);
+		});
 
 		piece.draw();
 		if (grid.collide_piece(piece)) {
@@ -83,18 +87,46 @@ TASK_FUNC(keypad_task) {
 		const auto mask = keypad->read();		
 		if (mask.bits.enter) {
 			piece.rotate_right();
+
+			clear_push({
+				.x = piece.center.x-1,
+				.y = piece.center.y-1,
+				.sx = 3,
+				.sy = 3,
+			});
 			piece.draw();
 		}
 		if (mask.bits.right) {
 			piece.center.x++;
+
+			clear_push({
+				.x = piece.center.x-2,
+				.y = piece.center.y-1,
+				.sx = 1,
+				.sy = 3,
+			});
 			piece.draw();
 		}
 		if (mask.bits.left) {
 			piece.center.x--;
+
+			clear_push({
+				.x = piece.center.x+2,
+				.y = piece.center.y-1,
+				.sx = 1,
+				.sy = 3,
+			});
 			piece.draw();
 		}
 		if (mask.bits.down) {
 			piece.center.y++;
+
+			clear_push({
+				.x = piece.center.x-1,
+				.y = piece.center.y-1,
+				.sx = 3,
+				.sy = 1,
+			});
 			piece.draw();
 		}
 
