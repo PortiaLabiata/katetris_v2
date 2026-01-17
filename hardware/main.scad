@@ -3,6 +3,7 @@ include <side_panel.scad>
 include <side_panel_2.scad>
 include <bottom_panel.scad>
 include <bracket.scad>
+use <blue_pill.scad>
 
 #top_panel();
 translate([0, 0, -side_width-thickness])
@@ -77,8 +78,7 @@ translate([-10, -50, -bat_depth-5])
         bat_height,
         bat_depth
     ]);
-    
-color("blue")
+
 rotate([0, 0, 90])
-translate([3, -25/2, -18-thickness])
-    cube([50, 25, 20]);
+translate([53/2, 0, -12])
+    bpill();

@@ -8,11 +8,11 @@ mount_holes_r = 1.77;
 
 mask_depth = thickness*3;
 
-disp_pcb_short = 32;
-disp_pcb_long = 43.7;
-disp_side = 29.72;
-disp_mount_holes_gap = 26.95;
-disp_hole_gap = 1.9;
+disp_pcb_short = 23;
+disp_pcb_long = 35;
+
+disp_side_long = 29.72;
+disp_side_short = 26;
 
 module cap_small_mask(x=0, y=0) {
 	translate([x, y, -thickness])
@@ -46,15 +46,23 @@ module buttons_mask(d=40) {
 }
 
 module display_mask() {
-    translate([-disp_side/2, -disp_side/2, -thickness])
-        cube([disp_side, disp_side, mask_depth]);
-    
-    coord_short = disp_pcb_short/2-disp_hole_gap-mount_holes_r;
-    coord_long = disp_pcb_long/2-disp_hole_gap-mount_holes_r;
+    translate([
+        -disp_side_short/2, 
+        -disp_side_long/2, 
+        -thickness
+    ])
+        cube([
+            disp_side_short, 
+            disp_side_long, 
+            mask_depth
+        ]);
     
     for (i = [-1, 1]) {
         for (j = [-1, 1]) {
-            mount_hole_mask(coord_short*i, coord_long*j);
+            mount_hole_mask(
+                disp_pcb_short/2*i, 
+                disp_pcb_long/2*j
+            );
         }
     }
 }
@@ -70,3 +78,5 @@ module top_panel() {
 			buttons_mask(11);
     }
 }
+
+top_panel();
