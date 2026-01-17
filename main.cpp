@@ -32,9 +32,15 @@ TASK_FUNC(video_task) {
 }
 
 static piece_t piece;
+static grid_t grid;
+static const rect_t screen_rect{
+	.x = 0,
+	.y = 0,
+	.sx = disp_backend_t::_sizex,
+	.sy = disp_backend_t::_sizey,
+};
+
 TASK_FUNC(main_task) {
-	const size_t size = 16;
-	size_t x = size;
 	osal->delay(2000);
 
 	piece = t_piece;
@@ -45,7 +51,28 @@ TASK_FUNC(main_task) {
 			disp_pc.deinit();
 #endif
 		piece.center.y++;
+
+		rect_t rect = {
+			.x = piece.center.x-1,
+			.y = piece.center.y-1,
+			.sx = 3,
+			.sy = 1,
+		};
+		rect.grid2px().intersect(screen_rect);
+		rect.translate(
+			piece_t::_x_offset,
+			piece_t::_y_offset
+		);
+		disp->clear_stack.push(rect);
+
 		piece.draw();
+		if (grid.collide_piece(piece)) {
+			grid.add_piece(piece);
+
+			piece = t_piece;	
+			grid.draw();
+		}
+
 		osal->delay(1000);
 	}
 }
@@ -54,16 +81,24 @@ TASK_FUNC(keypad_task) {
 	keypad->init();
 	while (1) {
 		const auto mask = keypad->read();		
-		if (mask.bits.enter)
-			;
-		if (mask.bits.right) 
+		if (mask.bits.enter) {
+			piece.rotate_right();
+			piece.draw();
+		}
+		if (mask.bits.right) {
 			piece.center.x++;
-		if (mask.bits.left)
+			piece.draw();
+		}
+		if (mask.bits.left) {
 			piece.center.x--;
-		if (mask.bits.down)
+			piece.draw();
+		}
+		if (mask.bits.down) {
 			piece.center.y++;
+			piece.draw();
+		}
 
-		osal->delay(20);
+		osal->delay(10);
 	}
 }
 
@@ -94,5 +129,6 @@ int main(void) {
 #endif
 	sched->init();
 
-	while (1) {}
+	while (1)
+		;
 }

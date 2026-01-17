@@ -17,6 +17,7 @@ public:
 
 private:
 	void _draw_dirty(const dirty_t& area);
+	void _clear_area(const rect_t& rect);
 
 	spidrv_t spi{SPI1, spi_mode_t::mode_3};
 	ioline_t rst_line{GPIOA, 3U};

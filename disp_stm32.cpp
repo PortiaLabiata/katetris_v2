@@ -85,6 +85,21 @@ void disp_stm32_t::clear() {
 	send_commandb(0x00);
 }
 
+void disp_stm32_t::_clear_area(const rect_t& rect) {
+	set_column_mode(rect.y, rect.sy+rect.y-1);
+	set_row_mode(rect.x, rect.sx+rect.x-1);
+
+	send_commandb(0x2C);
+
+	for (int i = 0; i < rect.sy; i++) {
+		for (int j = 0; j < rect.sx; j++) {
+			send_datab(0x00);
+			send_datab(0x00);
+		}
+	}
+	send_commandb(0x00);
+}
+
 size_t font_lookup(char c) {
 	for (size_t i = 0; i < sizeof(Draw::char_map)/sizeof(Draw::char_t); 
 					i++) {
@@ -96,6 +111,10 @@ size_t font_lookup(char c) {
 }
 
 void disp_stm32_t::flush() {
+	while (clear_stack.size() > 0) {
+		_clear_area(clear_stack.pop());
+	}
+
 	while (dirty_queue.size() > 0) {
 		const auto& area = dirty_queue.peek();
 		_draw_dirty(area);

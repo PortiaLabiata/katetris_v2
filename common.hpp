@@ -2,7 +2,6 @@
 #include <stddef.h>
 #include <stdint.h>
 #include "mutex.hpp"
-#include "mutex_class.hpp"
 
 enum class status {
 	ok,
@@ -150,6 +149,17 @@ inline int MIN(int a, int b) {
 inline int MAX(int a, int b) {
 	return a < b ? b : a;
 }
+
+struct rect_t {
+	int x, y;
+	int sx, sy;
+
+	rect_t& grid2px();
+	rect_t& translate(int _x, int _y);
+	rect_t& intersect(const rect_t& other);
+};
+
+int bound(int x, int left, int right);
 
 namespace HAL {
 

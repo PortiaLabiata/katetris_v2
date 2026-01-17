@@ -6,12 +6,12 @@ namespace OSAL {
 using pixel_t = uint16_t;
 class disp_backend_t {
 public:
-	static const size_t _sizex = 240;
-	static const size_t _sizey = 240;
-	static const size_t _dirty_maxx = 16;
-	static const size_t _dirty_maxy = 16;
-	static const size_t _queue_size = 8;
-	static const size_t _buffer_size = 32;
+	static constexpr size_t _sizex = 240;
+	static constexpr size_t _sizey = 240;
+	static constexpr size_t _dirty_maxx = 16;
+	static constexpr size_t _dirty_maxy = 16;
+	static constexpr size_t _queue_size = 8;
+	static constexpr size_t _buffer_size = 32;
 
 	disp_backend_t() = default;
 	virtual ~disp_backend_t() {};
@@ -47,7 +47,10 @@ public:
 	};
 
 	using dirty_queue_t = ring_buffer_t<dirty_t, _queue_size>;
+	using clear_stack_t = array_t<rect_t, _queue_size>;
+
 	dirty_queue_t dirty_queue;
+	clear_stack_t clear_stack;
 protected:
 	ring_buffer_t<char, _buffer_size> string_buffer;
 	size_t cursor_x, cursor_y;

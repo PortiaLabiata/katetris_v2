@@ -56,6 +56,13 @@ void disp_pc_t::draw_area(const disp_backend_t::dirty_t& area) {
 	}
 }
 
+void disp_pc_t::clear_area(const rect_t& rect) {
+	SDL_SetRenderDrawColor(renderer, 0, 0, 255, 100);
+	SDL_Rect _rect = {rect.x*ZOOM, 
+			rect.y*ZOOM, rect.sx*ZOOM, rect.sy*ZOOM};
+	SDL_RenderFillRect(renderer, &_rect);
+}
+
 size_t font_lookup(char c) {
 	for (size_t i = 0; i < sizeof(Draw::char_map)/sizeof(Draw::char_t); 
 					i++) {
@@ -86,6 +93,10 @@ void disp_pc_t::flush() {
 
 	while (dirty_queue.size() > 0) {
 		draw_area(dirty_queue.pop());
+	}
+
+	while (clear_stack.size() > 0) {
+		clear_area(clear_stack.pop());
 	}
 
 	while (string_buffer.size() && !dirty_queue.is_full()) {

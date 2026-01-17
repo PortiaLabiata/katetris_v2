@@ -18,6 +18,7 @@ public:
 
 private:
 	void draw_area(const dirty_t& area);
+	void clear_area(const rect_t& rect);
 	SDL_Window *window;
 	SDL_Renderer *renderer;
 };
