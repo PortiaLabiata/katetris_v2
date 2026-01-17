@@ -59,12 +59,6 @@ translate([
 	-side_width])
 rotate([0, 0, -90])
 bracket();
-
-// Button PCB
-pcb_side = 42;
-translate([-pcb_side/2, -50, -5])
-color("brown")
-    cube([pcb_side, pcb_side, 1]);
     
 // Battery
 bat_height = 50;
@@ -82,3 +76,7 @@ translate([-10, -50, -bat_depth-5])
 rotate([0, 0, 90])
 translate([53/2, 0, -12])
     bpill();
+    
+// Buttons PCB
+translate([0, -26, 0])
+    import("katetris.stl");
